@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kreditorlar (6010) - FAXR MADAD KONSALT</title>
+    <style>
+        :root {
+            /* PURPLE THEME VARIABLES */
+            --primary-color: #7c3aed;
+            /* Violet 600 */
+            --primary-light: #8b5cf6;
+            /* Violet 500 */
+            --primary-dark: #5b21b6;
+            /* Violet 800 */
+            --bg-color: #f5f3ff;
+            /* Violet 50 */
+            --card-bg: #ffffff;
+            --text-color: #3730a3;
+            /* Indigo 900 */
+            --border-color: #ddd6fe;
+            /* Violet 200 */
+            --success-color: #10b981;
+            /* Emerald 500 */
+            --danger-color: #ef4444;
+            /* Red 500 */
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: #4c1d95;
+            /* Violet 900 */
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .brand small {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: normal;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #ddd6fe;
+            text-align: left;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: #a78bfa;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .total-debt-card {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.8rem;
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
+            text-align: right;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        h2,
+        h3 {
+            margin-top: 0;
+            color: var(--primary-dark);
+        }
+
+        /* Forms & Inputs */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-dark);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #ede9fe;
+            color: var(--primary-dark);
+        }
+
+        tr:hover {
+            background-color: #f5f3ff;
+        }
+
+        .amount-col {
+            text-align: right;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .text-red {
+            color: #dc2626;
+        }
+
+        .text-green {
+            color: #16a34a;
+        }
+
+        /* Print Overlay */
+        #print-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #print-content {
+            background: white;
+            padding: 40px;
+            width: 210mm;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Official Akt Sverka Style */
+        .akt-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid black;
+            font-family: 'Times New Roman', serif;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .akt-table th,
+        .akt-table td {
+            border: 1px solid black;
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .akt-header th {
+            text-align: center;
+            background: #eee;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #print-content,
+            #print-content * {
+                visibility: visible;
+            }
+
+            #print-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="sidebar no-print">
+        <div class="brand">
+            🤝 KREDITORLAR
+            <small>FAXR MADAD KONSALT</small>
+        </div>
+        <button class="nav-btn active" onclick="switchView('dashboard')">📊 Asosiy Panel</button>
+        <button class="nav-btn" onclick="switchView('operations')">📝 Operatsiyalar</button>
+        <button class="nav-btn" onclick="switchView('sverka')">📑 Akt Sverka</button>
+        <button class="nav-btn" onclick="switchView('vendors')">🏢 Ta'minotchilar</button>
+        <div class="sidebar-footer">
+            Muallif: Suxrat Abdullaev<br>&copy; 2025
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar no-print">
+            <div>
+                <h2 style="margin:0;">Majburiyatlar Hisobi (6010)</h2>
+                <span style="color:#6b7280; font-size:0.9rem;">Bugungi sana: <span id="current-date"></span></span>
+            </div>
+            <div class="total-debt-card">
+                <div style="font-size:0.9rem; opacity:0.9;">Jami Kreditorlik Qarzi</div>
+                <div style="font-size:1.8rem; font-weight:bold;"><span id="total-debt">0</span> so'm</div>
+            </div>
+        </div>
+
+        <!-- 1. DASHBOARD -->
+        <div id="dashboard" class="section active">
+            <div class="card">
+                <h3>⚠️ Eng Katta Kreditorlarimiz</h3>
+                <p style="color:#666; font-size:0.9rem; margin-bottom:1rem;">Bizga mol yetkazib bergan, lekin hali
+                    to'lovini to'liq qilmagan hamkorlarimiz.</p>
+                <table id="top-debtors-table">
+                    <thead>
+                        <tr>
+                            <th>Ta'minotchi (Kreditor)</th>
+                            <th class="amount-col">Qarz Miqdori</th>
+                            <th>Holat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-debtors-body">
+                        <!-- JS fills -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. OPERATIONS -->
+        <div id="operations" class="section">
+            <div class="card">
+                <h3>Yangi Operatsiya Kiritish</h3>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="setOpType('purchase')">⬇️ Xarid Qilish (Qarz Olish)</button>
+                    <button class="tab-btn" onclick="setOpType('payment')">⬆️ To'lov Qilish (Qarz Uzish)</button>
+                </div>
+
+                <form id="op-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Sana</label>
+                            <input type="date" id="op-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ta'minotchi (Hamkor)</label>
+                            <div style="display:flex; gap:5px;">
+                                <select id="op-vendor" required>
+                                    <option value="">Tanlang...</option>
+                                </select>
+                                <button type="button" class="btn btn-primary" onclick="switchView('vendors')"
+                                    style="padding:0.5rem 1rem;">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Summa (so'm)</label>
+                            <input type="number" id="op-amount" min="1" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hujjat Raqami / Izoh</label>
+                            <input type="text" id="op-desc" placeholder="Masalan: Faktura №123 yoki To'lov №45"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Hint -->
+                    <div id="op-hint"
+                        style="background:#f3f4f6; padding:15px; border-radius:8px; margin-bottom:20px; border-left:4px solid #7c3aed;">
+                        <strong>Buxgalteriya:</strong>
+                        <span id="op-accounting-text">Dt 1010 (Materiallar) - Kt 6010 (Ta'minotchilar)</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>So'nggi Operatsiyalar Tarixi</h3>
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Sana</th>
+                            <th>Ta'minotchi</th>
+                            <th>Operatsiya</th>
+                            <th>Summa</th>
+                            <th>Izoh</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. AKT SVERKA -->
+        <div id="sverka" class="section">
+            <div class="card">
+                <h3>📑 Solishtirma Dalolatnoma (Akt Sverka)</h3>
+                <div class="form-grid" style="align-items:end;">
+                    <div class="form-group">
+                        <label>Ta'minotchi</label>
+                        <select id="sv-vendor"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Boshlanish Sanasi</label>
+                        <input type="date" id="sv-start">
+                    </div>
+                    <div class="form-group">
+                        <label>Tugash Sanasi</label>
+                        <input type="date" id="sv-end">
+                    </div>
+                    <button class="btn btn-primary" onclick="generateSverka()">Generatsiya</button>
+                </div>
+            </div>
+
+            <div id="sverka-result" class="card" style="display:none;">
+                <div style="text-align:right; margin-bottom:10px;">
+                    <button class="btn btn-primary" onclick="printSverka()">🖨️ Chop etish</button>
+                </div>
+                <!-- Preview area, content will be cloned for print -->
+                <div id="sverka-preview" style="border:1px solid #eee; padding:20px;"></div>
+            </div>
+        </div>
+
+        <!-- 4. VENDORS -->
+        <div id="vendors" class="section">
+            <div class="card">
+                <h3>Yangi Ta'minotchi Qo'shish</h3>
+                <form id="vendor-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Firma Nomi</label>
+                            <input type="text" id="v-name" required placeholder="Masalan: 'BUILDING MATERIALS' MCHJ">
+                        </div>
+                        <div class="form-group">
+                            <label>STIR (INN)</label>
+                            <input type="text" id="v-inn" placeholder="9 xonalik son">
+                        </div>
+                        <div class="form-group">
+                            <label>Mas'ul Shaxs</label>
+                            <input type="text" id="v-contact" placeholder="Ism Familiya">
+                        </div>
+                        <div class="form-group" style="display:flex; align-items:flex-end;">
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Qo'shish</button>
+                        </div>
+                    </div>
+                </form>
+
+                <h3>Ta'minotchilar Ro'yxati</h3>
+                <table id="vendors-table">
+                    <thead>
+                        <tr>
+                            <th>Nomi</th>
+                            <th>STIR</th>
+                            <th>Kontakt</th>
+                            <th>Amal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vendors-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PRINT CONTAINER -->
+    <div id="print-overlay" class="no-print">
+        <div id="print-content"></div>
+        <button onclick="closePrint()"
+            style="position:fixed; top:20px; right:20px; padding:10px 20px; background:white; border:1px solid #ccc; cursor:pointer;"
+            class="no-print">Yopish</button>
+    </div>
+
+    <script>
+        // --- STATE START ---
+
+        let currentState = {
+            opType: 'purchase', // 'purchase' (xarid) or 'payment' (to'lov)
+            vendors: JSON.parse(localStorage.getItem('cred_vendors') || '[]'),
+            transactions: JSON.parse(localStorage.getItem('cred_transactions') || '[]')
+        };
+
+        // --- INIT ---
+
+        window.onload = function () {
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('uz-UZ');
+
+            // Set defaults
+            document.getElementById('op-date').valueAsDate = new Date();
+            const startOfMonth = new Date(); startOfMonth.setDate(1);
+            document.getElementById('sv-start').valueAsDate = startOfMonth;
+            document.getElementById('sv-end').valueAsDate = new Date();
+
+            renderAll();
+        };
+
+        function switchView(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active'); // Needs event context, but we handle roughly
+        }
+
+        function setOpType(type) {
+            currentState.opType = type;
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+
+            const hint = document.getElementById('op-accounting-text');
+            if (type === 'purchase') {
+                btns[0].classList.add('active');
+                hint.innerHTML = "<b>Dt 1010</b> (Materiallar) - <b>Kt 6010</b> (Ta'minotchilar)<br>Qarzingiz oshadi.";
+            } else {
+                btns[1].classList.add('active');
+                hint.innerHTML = "<b>Dt 6010</b> (Ta'minotchilar) - <b>Kt 5110</b> (Hisob-kitob schyoti)<br>Qarzingiz kamayadi.";
+            }
+        }
+
+        // --- DATA LOGIC ---
+
+        function getBalance(vendorId) {
+            // Calculate balance: (Purchases) - (Payments)
+            // Purchase (Kredit 6010) increases debt
+            // Payment (Debet 6010) decreases debt
+            let debt = 0;
+            currentState.transactions.forEach(t => {
+                if (t.vendorId == vendorId) {
+                    if (t.type === 'purchase') debt += t.amount;
+                    else debt -= t.amount;
+                }
+            });
+            return debt;
+        }
+
+        function save() {
+            localStorage.setItem('cred_vendors', JSON.stringify(currentState.vendors));
+            localStorage.setItem('cred_transactions', JSON.stringify(currentState.transactions));
+            renderAll();
+        }
+
+        function renderAll() {
+            updateVendorsList();
+            renderDashboard();
+            renderHistory();
+        }
+
+        // --- DOM RENDERERS ---
+
+        function updateVendorsList() {
+            // Dropdowns
+            const selects = [document.getElementById('op-vendor'), document.getElementById('sv-vendor')];
+            selects.forEach(sel => {
+                const val = sel.value;
+                sel.innerHTML = '<option value="">Tanlang...</option>';
+                currentState.vendors.forEach(v => {
+                    const opt = document.createElement('option');
+                    opt.value = v.id;
+                    opt.text = v.name;
+                    sel.appendChild(opt);
+                });
+                sel.value = val;
+            });
+
+            // Table
+            const tbody = document.getElementById('vendors-body');
+            tbody.innerHTML = '';
+            currentState.vendors.forEach(v => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${v.name}</td>
+                        <td>${v.inn}</td>
+                        <td>${v.contact}</td>
+                        <td><button onclick="deleteVendor(${v.id})" style="color:red; background:none; border:none; cursor:pointer; font-size:1.2rem;">&times;</button></td>
+                    </tr>
+                 `;
+            });
+        }
+
+        function renderDashboard() {
+            let totalDebt = 0;
+            const debtors = [];
+
+            currentState.vendors.forEach(v => {
+                const bal = getBalance(v.id);
+                if (bal > 0) {
+                    totalDebt += bal;
+                    debtors.push({ name: v.name, amount: bal });
+                }
+            });
+
+            // Total card
+            document.getElementById('total-debt').innerText = totalDebt.toLocaleString();
+
+            // Top debtors table
+            const tbody = document.getElementById('top-debtors-body');
+            tbody.innerHTML = '';
+            debtors.sort((a, b) => b.amount - a.amount).forEach(d => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${d.name}</td>
+                        <td class="amount-col text-red">${d.amount.toLocaleString()}</td>
+                        <td><span style="background:#fee2e2; color:#ef4444; padding:2px 8px; border-radius:10px; font-size:0.8rem; font-weight:bold;">Qarzdormiz</span></td>
+                    </tr>
+                 `;
+            });
+            if (debtors.length === 0) tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#888;">Hozircha qarzlar yo\'q 🎉</td></tr>';
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+            // Show last 10
+            currentState.transactions.slice().reverse().slice(0, 10).forEach(t => {
+                const v = currentState.vendors.find(x => x.id == t.vendorId);
+                const isPurchase = t.type === 'purchase';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${t.date}</td>
+                        <td>${v ? v.name : 'Noma\'lum'}</td>
+                        <td>
+                            <span style="color:${isPurchase ? '#dc2626' : '#16a34a'}; font-weight:bold;">
+                                ${isPurchase ? 'Xarid (Qarz +)' : 'To\'lov (Qarz -)'}
+                            </span>
+                        </td>
+                        <td class="amount-col">${t.amount.toLocaleString()}</td>
+                        <td>${t.desc}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- HANDLERS ---
+
+        document.getElementById('vendor-form').onsubmit = function (e) {
+            e.preventDefault();
+            const name = document.getElementById('v-name').value;
+            currentState.vendors.push({
+                id: Date.now(),
+                name: name,
+                inn: document.getElementById('v-inn').value,
+                contact: document.getElementById('v-contact').value
+            });
+            save();
+            this.reset();
+            alert("Ta'minotchi qo'shildi!");
+        };
+
+        function deleteVendor(id) {
+            if (!confirm("O'chirasizmi?")) return;
+            // Check if used
+            const used = currentState.transactions.some(t => t.vendorId == id);
+            if (used) return alert("Bu ta'minotchi bilan operatsiyalar mavjud. O'chirish mumkin emas.");
+
+            currentState.vendors = currentState.vendors.filter(v => v.id !== id);
+            save();
+        }
+
+        document.getElementById('op-form').onsubmit = function (e) {
+            e.preventDefault();
+            const vendorId = document.getElementById('op-vendor').value;
+            if (!vendorId) return alert("Ta'minotchini tanlang!");
+
+            currentState.transactions.push({
+                id: Date.now(),
+                date: document.getElementById('op-date').value,
+                vendorId: vendorId,
+                type: currentState.opType,
+                amount: parseFloat(document.getElementById('op-amount').value),
+                desc: document.getElementById('op-desc').value
+            });
+            save();
+            this.reset();
+            document.getElementById('op-date').valueAsDate = new Date();
+            alert("Operatsiya saqlandi");
+        };
+
+        // --- SVERKA (AKT) GENERATOR ---
+
+        function generateSverka() {
+            const vendorId = document.getElementById('sv-vendor').value;
+            const start = document.getElementById('sv-start').value;
+            const end = document.getElementById('sv-end').value;
+
+            if (!vendorId) return alert("Kontragentni tanlang!");
+
+            const vendor = currentState.vendors.find(x => x.id == vendorId);
+            const txs = currentState.transactions.filter(t => t.vendorId == vendorId && t.date >= start && t.date <= end);
+            txs.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // Initial Balance (Calculate sum of txs BEFORE start date)
+            let initialBalance = 0;
+            currentState.transactions.filter(t => t.vendorId == vendorId && t.date < start).forEach(t => {
+                if (t.type === 'purchase') initialBalance += t.amount;
+                else initialBalance -= t.amount;
+            });
+
+            // Build rows
+            let rowsHtml = '';
+            let runningBalance = initialBalance;
+            let totalDebit = 0; // Bizning to'lovlarimiz (Biz uchun Dt 6010)
+            let totalCredit = 0; // Ularning xizmatlari (Biz uchun Kt 6010)
+
+            // Initial Row
+            rowsHtml += `
+                <tr style="background:#f9fafb; font-weight:bold;">
+                    <td>${start}</td>
+                    <td colspan="4">Boshlang'ich qoldiq</td>
+                    <td class="amount-col">${initialBalance > 0 ? initialBalance.toLocaleString() : '-'}</td> <!-- Qarz -->
+                    <td class="amount-col">${initialBalance < 0 ? Math.abs(initialBalance).toLocaleString() : '-'}</td> <!-- Haq -->
+                </tr>
+            `;
+
+            txs.forEach(t => {
+                const isPurchase = t.type === 'purchase';
+                // Purchase = They gave us goods = Increase Debt (Kt 6010)
+                // Payment = We gave money = Decrease Debt (Dt 6010)
+
+                let dt = isPurchase ? 0 : t.amount; // Bizning hisobda Dt 6010 (Kamayish/To'lov)
+                let kt = isPurchase ? t.amount : 0; // Bizning hisobda Kt 6010 (Ko'payish/Qarz)
+
+                totalDebit += dt;
+                totalCredit += kt;
+
+                if (isPurchase) runningBalance += t.amount;
+                else runningBalance -= t.amount;
+
+                rowsHtml += `
+                    <tr>
+                        <td>${t.date}</td>
+                        <td>${t.desc}</td>
+                        <td class="amount-col">${dt ? dt.toLocaleString() : '-'}</td>
+                        <td class="amount-col">${kt ? kt.toLocaleString() : '-'}</td> <!-- Bizning Qarz (Kirim) -->
+                        <td class="amount-col">${dt ? dt.toLocaleString() : '-'}</td> <!-- Ularning Qarz (To'lov) -->
+                        <td class="amount-col">${kt ? kt.toLocaleString() : '-'}</td> <!-- Ularning Kirim (Bizning Xarid) -->
+                        <td class="amount-col">${runningBalance > 0 ? runningBalance.toLocaleString() : '-'}</td>
+                        <td class="amount-col">${runningBalance < 0 ? Math.abs(runningBalance).toLocaleString() : '-'}</td>
+                    </tr>
+                `;
+            });
+
+            // End Balance
+            const finalHtml = `
+                <div style="font-family:'Times New Roman', serif; color:black;">
+                    <h3 style="text-align:center; text-decoration:underline;">SOLISHTIRMA DALOLATNOMA (AKT SVERKA)</h3>
+                    <p style="text-align:center;">
+                        <strong>${start}</strong> dan <strong>${end}</strong> gacha bo'lgan davr uchun<br>
+                        "FAXR MADAD KONSALT" va "${vendor.name}" o'rtasida.
+                    </p>
+
+                    <table class="akt-table">
+                        <thead class="akt-header">
+                            <tr>
+                                <th rowspan="2">Sana</th>
+                                <th rowspan="2">Hujjat mazmuni</th>
+                                <th colspan="2">"FAXR MADAD KONSALT" bo'yicha<br>(6010-schyot)</th>
+                                <th colspan="2">"${vendor.name}" bo'yicha<br>(Kontragent)</th>
+                                <th colspan="2">Joriy Qoldiq (Biz uchun)</th>
+                            </tr>
+                            <tr>
+                                <th>Debet (To'lov)</th>
+                                <th>Kredit (Qarz)</th>
+                                <th>Debet</th>
+                                <th>Kredit</th>
+                                <th>Qarzdormiz (Biz)</th>
+                                <th>Haqdormiz (Ular)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                        <tfoot>
+                            <tr style="font-weight:bold; background:#eee;">
+                                <td colspan="2" style="text-align:right">DAVR UCHUN AYLANMA:</td>
+                                <td class="amount-col">${totalDebit.toLocaleString()}</td>
+                                <td class="amount-col">${totalCredit.toLocaleString()}</td>
+                                <td class="amount-col">${totalDebit.toLocaleString()}</td>
+                                <td class="amount-col">${totalCredit.toLocaleString()}</td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr style="font-weight:bold; font-size:1.1rem;">
+                                <td colspan="6" style="text-align:right">YAKUNIY QOLDIQ (${end} holatiga):</td>
+                                <td class="amount-col">${runningBalance > 0 ? runningBalance.toLocaleString() : '-'}</td>
+                                <td class="amount-col">${runningBalance < 0 ? Math.abs(runningBalance).toLocaleString() : '-'}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div style="margin-top:20px; font-weight:bold;">
+                        Natija: ${runningBalance > 0
+                    ? `"FAXR MADAD KONSALT" korxonasi "${vendor.name}" oldida ${runningBalance.toLocaleString()} so'm QARZDOR.`
+                    : (runningBalance < 0
+                        ? `"${vendor.name}" korxonasi "FAXR MADAD KONSALT" oldida ${Math.abs(runningBalance).toLocaleString()} so'm QARZDOR.`
+                        : "Tomonlarning bir-biridan qarzi yo'q.")}
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; margin-top:50px;">
+                        <div style="width:45%;">
+                            <strong>"FAXR MADAD KONSALT" nomidan:</strong><br><br>
+                            Rahbar: _____________________<br><br>
+                            Bosh hisobchi: _____________________<br><br>
+                            M.O'.
+                        </div>
+                        <div style="width:45%;">
+                            <strong>"${vendor.name}" nomidan:</strong><br><br>
+                            Rahbar: _____________________<br><br>
+                            Bosh hisobchi: _____________________<br><br>
+                            M.O'.
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('sverka-preview').innerHTML = finalHtml;
+            document.getElementById('sverka-result').style.display = 'block';
+        }
+
+        function printSverka() {
+            const content = document.getElementById('sverka-preview').innerHTML;
+            document.getElementById('print-content').innerHTML = content;
+            document.getElementById('print-overlay').style.display = 'flex';
+            window.print();
+        }
+
+        function closePrint() {
+            document.getElementById('print-overlay').style.display = 'none';
+        }
+
+    </script>
+</body>
+
+</html>
