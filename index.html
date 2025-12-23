@@ -357,116 +357,273 @@
             padding: 5px;
             text-align: center;
         }
+
+        /* LOGIN MODAL & USER INFO */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .login-modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-modal-box h2 {
+            margin-top: 0;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .login-modal-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+
+        .login-modal-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: none;
+            cursor: pointer;
+            z-index: 100;
+        }
     </style>
 </head>
 
 <body>
 
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-icon"><i class="fa-solid fa-handshake"></i></div>
-            <div><b>KREDITORLAR</b><br><small style="opacity:0.7">6010-schyot</small></div>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item active" onclick="app.navigate('dashboard')"><i class="fa-solid fa-chart-pie"></i> Asosiy
-                Panel</li>
-            <li class="nav-item" onclick="app.navigate('registry')"><i class="fa-solid fa-list"></i> Kiruvchi Fakturalar
-            </li>
-            <li class="nav-item" onclick="app.navigate('payments')"><i class="fa-solid fa-money-bill-transfer"></i>
-                To'lovlar (Chiqim)</li>
-            <li class="nav-item" onclick="app.navigate('proxy')"><i class="fa-solid fa-file-signature"></i>
-                Ishonchnomalar (M-2)</li>
-            <li class="nav-item" onclick="app.navigate('partners')"><i class="fa-solid fa-building"></i> Ta'minotchilar
-            </li>
-        </ul>
-    </aside>
+    <body>
 
-    <main class="main-content">
-        <header class="header">
-            <h2 id="pageTitle">Umumiy holat</h2>
-            <div style="font-size:0.9rem; color:#666">FAXR MADAD KONSALT</div>
-        </header>
-        <div class="content-area" id="mainContainer"></div>
-    </main>
-
-    <!-- Forms Modal -->
-    <div class="modal" id="formModal">
-        <div class="modal-content">
-            <div class="card-header">
-                <h3 id="modalTitle">Forma</h3>
-                <button onclick="app.closeModal()" class="btn-outline btn-sm"><i class="fa-solid fa-times"></i></button>
+        <!-- LOGIN MODAL -->
+        <div class="modal-overlay" id="login-modal">
+            <div class="login-modal-box">
+                <h2>🔐 Kreditorlar Tizimi</h2>
+                <p style="margin-bottom: 1rem; color: #6b7280;">Talaba ma'lumotlarini kiriting:</p>
+                <input type="text" id="username-input" placeholder="F.I.Sh (Masalan: Aliyev Vali)" autofocus>
+                <input type="text" id="group-input" placeholder="Guruh (Masalan: 304-guruh)">
+                <button onclick="loginUser()">Boshlash</button>
             </div>
-            <div id="modalBody"></div>
         </div>
-    </div>
 
-    <!-- Print Modal -->
-    <div class="modal" id="printModal">
-        <div class="modal-content" style="max-width: 210mm;">
-            <div class="card-header no-print">
-                <h3>Hujjatni Chop Etish</h3>
-                <div>
-                    <button onclick="window.print()" class="btn btn-primary btn-sm"><i class="fa-solid fa-print"></i>
-                        Print</button>
-                    <button onclick="app.closeModal()" class="btn-outline btn-sm">Yopish</button>
+        <!-- USER DISPLAY -->
+        <div class="user-info no-print" id="user-display" style="cursor: default;">
+            <span id="current-user-info">...</span> <span style="cursor:pointer; margin-left:10px; color:red;"
+                onclick="logout()" title="Chiqish">❌</span>
+        </div>
+
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-handshake"></i></div>
+                <div><b>KREDITORLAR</b><br><small style="opacity:0.7">6010-schyot</small></div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="app.navigate('dashboard')"><i class="fa-solid fa-chart-pie"></i>
+                    Asosiy
+                    Panel</li>
+                <li class="nav-item" onclick="app.navigate('registry')"><i class="fa-solid fa-list"></i> Kiruvchi
+                    Fakturalar
+                </li>
+                <li class="nav-item" onclick="app.navigate('payments')"><i class="fa-solid fa-money-bill-transfer"></i>
+                    To'lovlar (Chiqim)</li>
+                <li class="nav-item" onclick="app.navigate('proxy')"><i class="fa-solid fa-file-signature"></i>
+                    Ishonchnomalar (M-2)</li>
+                <li class="nav-item" onclick="app.navigate('partners')"><i class="fa-solid fa-building"></i>
+                    Ta'minotchilar
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h2 id="pageTitle">Umumiy holat</h2>
+                <div style="display:flex; align-items:center; gap:20px;">
+                    <button onclick="openQuiz()" class="btn btn-primary btn-sm"
+                        style="background:#8b5cf6; border:none; box-shadow:0 4px 15px rgba(139, 92, 246, 0.4);">
+                        🧠 Bilimni Sinash
+                    </button>
+                    <div style="font-size:0.9rem; color:#666">FAXR MADAD KONSALT</div>
                 </div>
+            </header>
+            <div class="content-area" id="mainContainer"></div>
+        </main>
+
+        <!-- Forms Modal -->
+        <div class="modal" id="formModal">
+            <div class="modal-content">
+                <div class="card-header">
+                    <h3 id="modalTitle">Forma</h3>
+                    <button onclick="app.closeModal()" class="btn-outline btn-sm"><i
+                            class="fa-solid fa-times"></i></button>
+                </div>
+                <div id="modalBody"></div>
             </div>
-            <div id="printBody"></div>
         </div>
-    </div>
 
-    <script>
-        const utils = {
-            fmtMoney: (n) => new Intl.NumberFormat('uz-UZ').format(n) + ' so\'m',
-            genId: () => Date.now().toString(36) + Math.random().toString(36).substr(2)
-        };
+        <!-- Print Modal -->
+        <div class="modal" id="printModal">
+            <div class="modal-content" style="max-width: 210mm;">
+                <div class="card-header no-print">
+                    <h3>Hujjatni Chop Etish</h3>
+                    <div>
+                        <button onclick="window.print()" class="btn btn-primary btn-sm"><i
+                                class="fa-solid fa-print"></i>
+                            Print</button>
+                        <button onclick="app.closeModal()" class="btn-outline btn-sm">Yopish</button>
+                    </div>
+                </div>
+                <div id="printBody"></div>
+            </div>
+        </div>
 
-        const store = {
-            get: (k) => JSON.parse(localStorage.getItem('kred_' + k) || '[]'),
-            set: (k, v) => localStorage.setItem('kred_' + k, JSON.stringify(v)),
-            add: (k, i) => { const d = store.get(k); d.push(i); store.set(k, d); },
-            update: (k, id, data) => {
-                const list = store.get(k);
-                const idx = list.findIndex(x => x.id === id);
-                if (idx !== -1) { list[idx] = { ...list[idx], ...data }; store.set(k, list); }
-            },
-            del: (k, id) => store.set(k, store.get(k).filter(x => x.id !== id))
-        };
+        <script>
+            const utils = {
+                fmtMoney: (n) => new Intl.NumberFormat('uz-UZ').format(n) + ' so\'m',
+                genId: () => Date.now().toString(36) + Math.random().toString(36).substr(2)
+            };
 
-        const app = {
-            init() { this.render('dashboard'); },
+            let currentUser = null;
 
-            navigate(view) {
-                this.currentView = view;
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                document.querySelector(`.nav-item[onclick="app.navigate('${view}')"]`).classList.add('active');
-                this.render(view);
-            },
+            const store = {
+                get: (k) => {
+                    if (!currentUser) return [];
+                    return JSON.parse(localStorage.getItem('kred_' + k + '_' + currentUser) || '[]');
+                },
+                set: (k, v) => {
+                    if (!currentUser) return;
+                    localStorage.setItem('kred_' + k + '_' + currentUser, JSON.stringify(v));
+                },
+                add: (k, i) => { const d = store.get(k); d.push(i); store.set(k, d); },
+                update: (k, id, data) => {
+                    const list = store.get(k);
+                    const idx = list.findIndex(x => x.id === id);
+                    if (idx !== -1) { list[idx] = { ...list[idx], ...data }; store.set(k, list); }
+                },
+                del: (k, id) => store.set(k, store.get(k).filter(x => x.id !== id))
+            };
 
-            render(view) {
-                const c = document.getElementById('mainContainer');
-                const t = document.getElementById('pageTitle');
+            // --- LOGIN SYSTEM ---
+            function checkLogin() {
+                const storedUser = sessionStorage.getItem('kreditor_user');
+                const storedGroup = sessionStorage.getItem('kreditor_group');
+                if (storedUser && storedGroup) {
+                    currentUser = storedUser;
+                    document.getElementById('login-modal').style.display = 'none';
+                    document.getElementById('user-display').style.display = 'block';
+                    updateDisplay(storedUser, storedGroup);
+                    app.init();
+                } else {
+                    document.getElementById('login-modal').style.display = 'flex';
+                }
+            }
 
-                if (view === 'dashboard') { t.innerText = 'Bosh sahifa'; this.renderDash(c); }
-                else if (view === 'registry') { t.innerText = 'Kiruvchi Hisob-fakturalar Reestri'; this.renderRegistry(c); }
-                else if (view === 'payments') { t.innerText = 'To\'lovlar (Kreditorlarga)'; this.renderPayments(c); }
-                else if (view === 'proxy') { t.innerText = 'Ishonchnomalar (M-2)'; this.renderProxy(c); }
-                else if (view === 'partners') { t.innerText = 'Ta\'minotchilar & Xodimlar'; this.renderPartners(c); }
-            },
+            function loginUser() {
+                const name = document.getElementById('username-input').value.trim();
+                const group = document.getElementById('group-input').value.trim();
 
-            // --- DASHBOARD ---
-            renderDash(c) {
-                const vendors = store.get('vendors');
-                const txs = store.get('txs');
+                if (name && group) {
+                    currentUser = name;
+                    sessionStorage.setItem('kreditor_user', name);
+                    sessionStorage.setItem('kreditor_group', group);
+                    document.getElementById('login-modal').style.display = 'none';
+                    document.getElementById('user-display').style.display = 'block';
+                    updateDisplay(name, group);
+                    app.init();
+                } else {
+                    alert("Iltimos, F.I.Sh va Guruhni kiriting!");
+                }
+            }
 
-                let totalDebt = 0;
-                vendors.forEach(v => {
-                    const purchased = txs.filter(t => t.vendorId === v.id && t.type === 'purchase').reduce((s, t) => s + t.amount, 0);
-                    const paid = txs.filter(t => t.vendorId === v.id && t.type === 'payment').reduce((s, t) => s + t.amount, 0);
-                    totalDebt += (purchased - paid);
-                });
+            function updateDisplay(name, group) {
+                document.getElementById('current-user-info').innerHTML = `Talaba: <b>${name}</b> | Guruh: <b>${group}</b>`;
+            }
 
-                c.innerHTML = `
+            function logout() {
+                if (confirm("Tizimdan chiqmoqchimisiz?")) {
+                    sessionStorage.removeItem('kreditor_user');
+                    sessionStorage.removeItem('kreditor_group');
+                    location.reload();
+                }
+            }
+
+            // Auto-run login check on load
+            window.onload = function () {
+                checkLogin();
+            };
+
+            const app = {
+                init() {
+                    if (!currentUser) return;
+                    this.render('dashboard');
+                },
+
+                navigate(view) {
+                    this.currentView = view;
+                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                    document.querySelector(`.nav-item[onclick="app.navigate('${view}')"]`).classList.add('active');
+                    this.render(view);
+                },
+
+                render(view) {
+                    const c = document.getElementById('mainContainer');
+                    const t = document.getElementById('pageTitle');
+
+                    if (view === 'dashboard') { t.innerText = 'Bosh sahifa'; this.renderDash(c); }
+                    else if (view === 'registry') { t.innerText = 'Kiruvchi Hisob-fakturalar Reestri'; this.renderRegistry(c); }
+                    else if (view === 'payments') { t.innerText = 'To\'lovlar (Kreditorlarga)'; this.renderPayments(c); }
+                    else if (view === 'proxy') { t.innerText = 'Ishonchnomalar (M-2)'; this.renderProxy(c); }
+                    else if (view === 'partners') { t.innerText = 'Ta\'minotchilar & Xodimlar'; this.renderPartners(c); }
+                },
+
+                // --- DASHBOARD ---
+                renderDash(c) {
+                    const vendors = store.get('vendors');
+                    const txs = store.get('txs');
+
+                    let totalDebt = 0;
+                    vendors.forEach(v => {
+                        const purchased = txs.filter(t => t.vendorId === v.id && t.type === 'purchase').reduce((s, t) => s + t.amount, 0);
+                        const paid = txs.filter(t => t.vendorId === v.id && t.type === 'payment').reduce((s, t) => s + t.amount, 0);
+                        totalDebt += (purchased - paid);
+                    });
+
+                    c.innerHTML = `
             <div class="stats-grid">
                 <div class="stat-card">
                     <span style="color:#64748b">Jami Kreditorlik Qarzi</span>
@@ -486,39 +643,41 @@
                     <thead><tr><th>Ta'minotchi</th><th>Qarz Miqdori</th><th>Holat</th></tr></thead>
                     <tbody>
                         ${vendors.map(v => {
-                    const p = txs.filter(t => t.vendorId === v.id && t.type === 'purchase').reduce((s, t) => s + t.amount, 0);
-                    const pay = txs.filter(t => t.vendorId === v.id && t.type === 'payment').reduce((s, t) => s + t.amount, 0);
-                    const bal = p - pay;
-                    if (bal <= 0) return '';
-                    return `<tr><td>${v.name}</td><td><b>${utils.fmtMoney(bal)}</b></td><td><span style="color:red">Qarzdormiz</span></td></tr>`;
-                }).join('')}
+                        const p = txs.filter(t => t.vendorId === v.id && t.type === 'purchase').reduce((s, t) => s + t.amount, 0);
+                        const pay = txs.filter(t => t.vendorId === v.id && t.type === 'payment').reduce((s, t) => s + t.amount, 0);
+                        const bal = p - pay;
+                        if (bal <= 0) return '';
+                        return `<tr><td>${v.name}</td><td><b>${utils.fmtMoney(bal)}</b></td><td><span style="color:red">Qarzdormiz</span></td></tr>`;
+                    }).join('')}
                     </tbody>
                 </table>
             </div>
         `;
-            },
+                },
 
-            // --- REGISTRY (Purhcases) ---
-            renderRegistry(c) {
-                const txs = store.get('txs').filter(t => t.type === 'purchase');
-                const vendors = store.get('vendors');
+                // --- REGISTRY (Purhcases) ---
+                renderRegistry(c) {
+                    const txs = store.get('txs').filter(t => t.type === 'purchase');
+                    const vendors = store.get('vendors');
 
-                c.innerHTML = `
+                    c.innerHTML = `
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Kiruvchi Fakturalar</div>
                     <button class="btn btn-primary btn-sm" onclick="app.modalTx('purchase')"><i class="fa-solid fa-plus"></i> Yangi Faktura (Kirim)</button>
                 </div>
                 <table>
-                    <thead><tr><th>Sana</th><th>Ta'minotchi</th><th>Faktura №</th><th>Summa (Jami)</th><th>Izoh</th><th>Amallar</th></tr></thead>
+                <table>
+                    <thead><tr><th>Sana</th><th>Faktura №</th><th>Shartnoma №</th><th>Ta'minotchi</th><th>Summa (Jami)</th><th>To'lov maqsad (Izoh)</th><th>Amallar</th></tr></thead>
                     <tbody>
                         ${txs.map(t => {
-                    const v = vendors.find(x => x.id === t.vendorId) || {};
-                    return `
+                        const v = vendors.find(x => x.id === t.vendorId) || {};
+                        return `
                                 <tr>
                                     <td>${t.date}</td>
-                                    <td>${v.name || 'Noma\'lum'}</td>
                                     <td>${t.docNumber}</td>
+                                    <td>${t.contractBox || '-'}</td>
+                                    <td>${v.name || 'Noma\'lum'}</td>
                                     <td><strong>${utils.fmtMoney(t.amount)}</strong></td>
                                     <td>${t.note || '-'}</td>
                                     <td>
@@ -526,18 +685,18 @@
                                         <button class="btn-outline btn-sm" onclick="app.delTx('${t.id}', 'registry')" style="color:red"><i class="fa-trash fa-solid"></i></button>
                                     </td>
                                 </tr>`;
-                }).join('')}
+                    }).join('')}
                     </tbody>
                 </table>
             </div>
         `;
-            },
+                },
 
-            // --- PAYMENTS ---
-            renderPayments(c) {
-                const txs = store.get('txs').filter(t => t.type === 'payment');
-                const vendors = store.get('vendors');
-                c.innerHTML = `
+                // --- PAYMENTS ---
+                renderPayments(c) {
+                    const txs = store.get('txs').filter(t => t.type === 'payment');
+                    const vendors = store.get('vendors');
+                    c.innerHTML = `
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Kreditorlarga To'lovlar</div>
@@ -547,8 +706,8 @@
                     <thead><tr><th>Sana</th><th>Ta'minotchi</th><th>Hujjat</th><th>Summa</th><th>Amallar</th></tr></thead>
                     <tbody>
                          ${txs.map(t => {
-                    const v = vendors.find(x => x.id === t.vendorId) || {};
-                    return `
+                        const v = vendors.find(x => x.id === t.vendorId) || {};
+                        return `
                                 <tr>
                                     <td>${t.date}</td>
                                     <td>${v.name || '-'}</td>
@@ -559,19 +718,19 @@
                                         <button class="btn-outline btn-sm" onclick="app.delTx('${t.id}', 'payments')" style="color:red"><i class="fa-trash fa-solid"></i></button>
                                     </td>
                                 </tr>`;
-                }).join('')}
+                    }).join('')}
                     </tbody>
                 </table>
             </div>
         `;
-            },
+                },
 
-            modalTx(type, id) {
-                const tx = id ? store.get('txs').find(x => x.id === id) : { type };
-                const vendors = store.get('vendors');
+                modalTx(type, id) {
+                    const tx = id ? store.get('txs').find(x => x.id === id) : { type };
+                    const vendors = store.get('vendors');
 
-                document.getElementById('modalTitle').innerText = (id ? 'Tahrirlash: ' : 'Yangi: ') + (tx.type === 'purchase' ? 'Faktura' : 'To\'lov');
-                document.getElementById('modalBody').innerHTML = `
+                    document.getElementById('modalTitle').innerText = (id ? 'Tahrirlash: ' : 'Yangi: ') + (tx.type === 'purchase' ? 'Faktura' : 'To\'lov');
+                    document.getElementById('modalBody').innerHTML = `
             <form onsubmit="app.saveTx(event)">
                 <input type="hidden" name="id" value="${tx.id || ''}">
                 <input type="hidden" name="type" value="${tx.type}">
@@ -586,41 +745,42 @@
                     <div class="form-group"><label class="form-label">Sana</label><input type="date" name="date" class="form-control" value="${tx.date || new Date().toISOString().split('T')[0]}" required></div>
                     <div class="form-group"><label class="form-label">Hujjat №</label><input name="docNumber" class="form-control" value="${tx.docNumber || ''}" required></div>
                 </div>
+                <div class="form-group"><label class="form-label">Shartnoma № (va sanasi)</label><input name="contractBox" class="form-control" value="${tx.contractBox || ''}" placeholder="Masalan: № 15 (10.01.20xx)"></div>
                 <div class="form-group"><label class="form-label">Summa</label><input type="number" name="amount" class="form-control" value="${tx.amount || ''}" required></div>
                 <div class="form-group"><label class="form-label">Izoh</label><input name="note" class="form-control" value="${tx.note || ''}"></div>
                 <button type="submit" class="btn btn-primary" style="width:100%">Saqlash</button>
             </form>
         `;
-                document.getElementById('formModal').classList.add('active');
-            },
+                    document.getElementById('formModal').classList.add('active');
+                },
 
-            editTx(id) {
-                const tx = store.get('txs').find(t => t.id === id);
-                this.modalTx(tx.type, id);
-            },
+                editTx(id) {
+                    const tx = store.get('txs').find(t => t.id === id);
+                    this.modalTx(tx.type, id);
+                },
 
-            saveTx(e) {
-                e.preventDefault();
-                const fd = new FormData(e.target);
-                const data = Object.fromEntries(fd.entries());
-                data.amount = parseFloat(data.amount);
+                saveTx(e) {
+                    e.preventDefault();
+                    const fd = new FormData(e.target);
+                    const data = Object.fromEntries(fd.entries());
+                    data.amount = parseFloat(data.amount);
 
-                if (data.id) store.update('txs', data.id, data);
-                else { data.id = utils.genId(); store.add('txs', data); }
+                    if (data.id) store.update('txs', data.id, data);
+                    else { data.id = utils.genId(); store.add('txs', data); }
 
-                this.closeModal();
-                this.render(data.type === 'purchase' ? 'registry' : 'payments');
-            },
+                    this.closeModal();
+                    this.render(data.type === 'purchase' ? 'registry' : 'payments');
+                },
 
-            delTx(id, view) { if (confirm('O\'chirasizmi?')) { store.del('txs', id); this.render(view); } },
+                delTx(id, view) { if (confirm('O\'chirasizmi?')) { store.del('txs', id); this.render(view); } },
 
-            // --- PROXY (ISHONCHNOMA) ---
-            renderProxy(c) {
-                const proxies = store.get('proxies');
-                const vendors = store.get('vendors');
-                const emps = store.get('employees');
+                // --- PROXY (ISHONCHNOMA) ---
+                renderProxy(c) {
+                    const proxies = store.get('proxies');
+                    const vendors = store.get('vendors');
+                    const emps = store.get('employees');
 
-                c.innerHTML = `
+                    c.innerHTML = `
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Ishonchnomalar (M-2 Shakli)</div>
@@ -630,9 +790,9 @@
                     <thead><tr><th>№</th><th>Sana</th><th>Xodim</th><th>Ta'minotchi</th><th>Holat</th><th>Amallar</th></tr></thead>
                     <tbody>
                         ${proxies.map(p => {
-                    const v = vendors.find(x => x.id === p.vendorId) || {};
-                    const e = emps.find(x => x.id === p.employeeId) || {};
-                    return `
+                        const v = vendors.find(x => x.id === p.vendorId) || {};
+                        const e = emps.find(x => x.id === p.employeeId) || {};
+                        return `
                                 <tr>
                                     <td>${p.number}</td><td>${p.date}</td>
                                     <td>${e.name || '-'}</td><td>${v.name || '-'}</td>
@@ -642,21 +802,21 @@
                                         <button class="btn-outline btn-sm" onclick="app.delProxy('${p.id}')" style="color:red"><i class="fa-trash fa-solid"></i></button>
                                     </td>
                                 </tr>`;
-                }).join('')}
+                    }).join('')}
                     </tbody>
                 </table>
             </div>
             <div style="font-size:0.85rem; color:#666; padding:0 1rem;">* Ishonchnoma 10 kunga beriladi va moddiy boyliklarni olish uchun xizmat qiladi.</div>
         `;
-            },
+                },
 
-            modalProxy() {
-                const vendors = store.get('vendors');
-                const emps = store.get('employees');
-                if (emps.length === 0) return alert('Avval xodimlarni kiriting (Ta\'minotchilar bo\'limida)');
+                modalProxy() {
+                    const vendors = store.get('vendors');
+                    const emps = store.get('employees');
+                    if (emps.length === 0) return alert('Avval xodimlarni kiriting (Ta\'minotchilar bo\'limida)');
 
-                document.getElementById('modalTitle').innerText = 'Yangi Ishonchnoma';
-                document.getElementById('modalBody').innerHTML = `
+                    document.getElementById('modalTitle').innerText = 'Yangi Ishonchnoma';
+                    document.getElementById('modalBody').innerHTML = `
             <form onsubmit="app.saveProxy(event)">
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">Raqam</label><input name="number" class="form-control" required value="${store.get('proxies').length + 1}"></div>
@@ -684,25 +844,25 @@
                 <button type="submit" class="btn btn-primary" style="width:100%">Saqlash</button>
             </form>
         `;
-                document.getElementById('formModal').classList.add('active');
-            },
+                    document.getElementById('formModal').classList.add('active');
+                },
 
-            saveProxy(e) {
-                e.preventDefault();
-                const fd = new FormData(e.target);
-                const data = Object.fromEntries(fd.entries());
-                data.id = utils.genId();
-                store.add('proxies', data);
-                this.closeModal();
-                this.render('proxy');
-            },
+                saveProxy(e) {
+                    e.preventDefault();
+                    const fd = new FormData(e.target);
+                    const data = Object.fromEntries(fd.entries());
+                    data.id = utils.genId();
+                    store.add('proxies', data);
+                    this.closeModal();
+                    this.render('proxy');
+                },
 
-            printProxy(id) {
-                const p = store.get('proxies').find(x => x.id === id);
-                const v = store.get('vendors').find(x => x.id === p.vendorId) || {};
-                const e = store.get('employees').find(x => x.id === p.employeeId) || {};
+                printProxy(id) {
+                    const p = store.get('proxies').find(x => x.id === id);
+                    const v = store.get('vendors').find(x => x.id === p.vendorId) || {};
+                    const e = store.get('employees').find(x => x.id === p.employeeId) || {};
 
-                document.getElementById('printBody').innerHTML = `
+                    document.getElementById('printBody').innerHTML = `
              <div class="proxy-form">
                 <div class="proxy-header">
                     <h3>ISHONCHNOMA № ${p.number}</h3>
@@ -732,16 +892,16 @@
                 <p style="text-align:center">Imzo namunasini tasdiqlayman: __________________ (Rahbar imzosi)</p>
              </div>
         `;
-                document.getElementById('printModal').classList.add('active');
-            },
+                    document.getElementById('printModal').classList.add('active');
+                },
 
-            delProxy(id) { if (confirm('O\'chirasizmi?')) { store.del('proxies', id); this.render('proxy'); } },
+                delProxy(id) { if (confirm('O\'chirasizmi?')) { store.del('proxies', id); this.render('proxy'); } },
 
-            // --- PARTNERS & EMPLOYEES ---
-            renderPartners(c) {
-                const vs = store.get('vendors');
-                const es = store.get('employees');
-                c.innerHTML = `
+                // --- PARTNERS & EMPLOYEES ---
+                renderPartners(c) {
+                    const vs = store.get('vendors');
+                    const es = store.get('employees');
+                    c.innerHTML = `
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem">
                 <div class="card">
                     <div class="card-header">
@@ -765,67 +925,203 @@
                 </div>
             </div>
         `;
-            },
+                },
 
-            modalVendor() {
-                document.getElementById('modalTitle').innerText = 'Yangi Ta\'minotchi';
-                document.getElementById('modalBody').innerHTML = `
+                modalVendor() {
+                    document.getElementById('modalTitle').innerText = 'Yangi Ta\'minotchi';
+                    document.getElementById('modalBody').innerHTML = `
             <form onsubmit="app.saveVendor(event)">
                 <div class="form-group"><label>Nomi</label><input name="name" class="form-control" required></div>
                 <div class="form-group"><label>STIR</label><input name="inn" class="form-control"></div>
                 <button class="btn btn-primary" style="width:100%">Qo'shish</button>
             </form>`;
-                document.getElementById('formModal').classList.add('active');
-            },
-            saveVendor(e) {
-                e.preventDefault(); const fd = new FormData(e.target);
-                store.add('vendors', { id: utils.genId(), name: fd.get('name'), inn: fd.get('inn') });
-                this.closeModal(); this.render('partners');
-            },
+                    document.getElementById('formModal').classList.add('active');
+                },
+                saveVendor(e) {
+                    e.preventDefault(); const fd = new FormData(e.target);
+                    store.add('vendors', { id: utils.genId(), name: fd.get('name'), inn: fd.get('inn') });
+                    this.closeModal(); this.render('partners');
+                },
 
-            modalEmp() {
-                document.getElementById('modalTitle').innerText = 'Yangi Xodim';
-                document.getElementById('modalBody').innerHTML = `
+                modalEmp() {
+                    document.getElementById('modalTitle').innerText = 'Yangi Xodim';
+                    document.getElementById('modalBody').innerHTML = `
             <form onsubmit="app.saveEmp(event)">
                 <div class="form-group"><label>F.I.SH</label><input name="name" class="form-control" required></div>
                 <div class="form-group"><label>Lavozim</label><input name="position" class="form-control" required></div>
                 <div class="form-group"><label>Pasport</label><input name="passport" class="form-control" required placeholder="AA 1234567"></div>
                 <button class="btn btn-primary" style="width:100%">Qo'shish</button>
             </form>`;
-                document.getElementById('formModal').classList.add('active');
-            },
-            saveEmp(e) {
-                e.preventDefault(); const fd = new FormData(e.target);
-                store.add('employees', { id: utils.genId(), name: fd.get('name'), position: fd.get('position'), passport: fd.get('passport') });
-                this.closeModal(); this.render('partners');
-            },
+                    document.getElementById('formModal').classList.add('active');
+                },
+                saveEmp(e) {
+                    e.preventDefault(); const fd = new FormData(e.target);
+                    store.add('employees', { id: utils.genId(), name: fd.get('name'), position: fd.get('position'), passport: fd.get('passport') });
+                    this.closeModal(); this.render('partners');
+                },
 
-            closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
-        };
+                closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
+            };
 
-        window.onload = () => {
-            // Migrate old data if exists
-            if (localStorage.getItem('cred_vendors')) {
-                const oldV = JSON.parse(localStorage.getItem('cred_vendors'));
-                const oldT = JSON.parse(localStorage.getItem('cred_transactions'));
-                if (oldV.length > 0 && store.get('vendors').length == 0) localStorage.setItem('kred_vendors', JSON.stringify(oldV));
-                if (oldT.length > 0 && store.get('txs').length == 0) {
-                    // Need to map old tx format to new
-                    const newTxs = oldT.map(t => ({
-                        id: t.id || utils.genId(),
-                        type: t.type,
-                        vendorId: t.vendorId, // might need numeric to string check if IDs changed format, but simplistic migration usually works for same session
-                        date: t.date,
-                        amount: t.amount,
-                        docNumber: '-',
-                        note: t.desc
-                    }));
-                    localStorage.setItem('kred_txs', JSON.stringify(newTxs));
+            window.onload = () => {
+                // Migrate old data if exists
+                if (localStorage.getItem('cred_vendors')) {
+                    const oldV = JSON.parse(localStorage.getItem('cred_vendors'));
+                    const oldT = JSON.parse(localStorage.getItem('cred_transactions'));
+                    if (oldV.length > 0 && store.get('vendors').length == 0) localStorage.setItem('kred_vendors', JSON.stringify(oldV));
+                    if (oldT.length > 0 && store.get('txs').length == 0) {
+                        // Need to map old tx format to new
+                        const newTxs = oldT.map(t => ({
+                            id: t.id || utils.genId(),
+                            type: t.type,
+                            vendorId: t.vendorId, // might need numeric to string check if IDs changed format, but simplistic migration usually works for same session
+                            date: t.date,
+                            amount: t.amount,
+                            docNumber: '-',
+                            note: t.desc
+                        }));
+                        localStorage.setItem('kred_txs', JSON.stringify(newTxs));
+                    }
+                }
+                checkLogin();
+            };
+        </script>
+        <script>
+            // --- QUIZ LOGIC (MINI-TRENAJYOR) ---
+            const quizQuestions = [
+                { q: "Material sotib olindi (Pul keyin to'lanadi) (10,000,000 so'm)", dt: "1010", kt: "6010", sum: 10000000 },
+                { q: "Asosiy vosita sotib olindi (Qarzga) (50,000,000 so'm)", dt: "0810", kt: "6010", sum: 50000000 },
+                { q: "Yetkazib beruvchidan elektr energiyasi qabul qilindi (1,000,000 so'm)", dt: "2010", kt: "6010", sum: 1000000 },
+                { q: "Yetkazib beruvchiga pul o'tkazildi (To'lov) (5,000,000 so'm)", dt: "6010", kt: "5110", sum: 5000000 },
+                { q: "Kreditorga avans (bo'nak) berildi (2,000,000 so'm)", dt: "4310", kt: "5110", sum: 2000000 },
+                { q: "Berilgan avans hisobga olindi (Material kelib tushgach) (2,000,000 so'm)", dt: "6010", kt: "4310", sum: 2000000 },
+                { q: "Ta'sischidan qarz olindi (Vaqtinchalik moliyaviy yordam) (100,000,000 so'm)", dt: "5110", kt: "6820", sum: 100000000 },
+                { q: "Bankdan qisqa muddatli kredit olindi (To'lov uchun) (20,000,000 so'm)", dt: "6010", kt: "6810", sum: 20000000 },
+                { q: "Da'vo muddati o'tgan kreditor qarzi daromadga olindi (500,000 so'm)", dt: "6010", kt: "9360", sum: 500000 },
+                { q: "Kreditorga tovar qaytarib berildi (Vozvrat) (1,000,000 so'm)", dt: "6010", kt: "1010", sum: 1000000 }
+            ];
+
+            let currentQIndex = 0;
+
+            function openQuiz() {
+                currentQIndex = 0;
+                document.getElementById('quiz-modal').style.display = 'flex';
+                loadQuestion();
+            }
+
+            function closeQuiz() {
+                document.getElementById('quiz-modal').style.display = 'none';
+            }
+
+            function loadQuestion() {
+                if (currentQIndex >= quizQuestions.length) {
+                    document.getElementById('quiz-content').innerHTML = `
+                    <div style="text-align:center; padding:20px;">
+                        <h2 style="color:#7c3aed;">🎉 Tabriklaymiz!</h2>
+                        <p>Siz barcha savollarni muvaffaqiyatli yakunladingiz.</p>
+                        <button onclick="closeQuiz()" class="btn btn-primary" style="width:100%">Yopish</button>
+                        <button onclick="openQuiz()" class="btn btn-outline" style="width:100%; margin-top:10px;">Qayta ishlash</button>
+                    </div>
+                `;
+                    return;
+                }
+
+                const q = quizQuestions[currentQIndex];
+                // Reset content if it was overwritten by success message
+                if (!document.getElementById('q-text')) {
+                    document.getElementById('quiz-content').innerHTML = `
+                        <div style="background:#f3f4f6; padding:15px; border-radius:8px; margin-bottom:20px; font-weight:bold; color:#1f2937;" id="q-text"></div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                            <div>
+                                <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:5px;">Debet (Schyot)</label>
+                                <input type="text" id="q-dt" placeholder="Mas: 1010" class="form-control">
+                            </div>
+                            <div>
+                                <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:5px;">Kredit (Schyot)</label>
+                                <input type="text" id="q-kt" placeholder="Mas: 6010" class="form-control">
+                            </div>
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:5px;">Summa</label>
+                            <input type="number" id="q-sum" placeholder="So'mda kiriting" class="form-control">
+                        </div>
+                        <div id="q-feedback" style="margin-bottom:15px; padding:10px; background:#fff; border:1px solid #ccc; border-radius:6px; display:none;"></div>
+                        <button onclick="checkAnswer()" class="btn btn-primary" style="width:100%; background:#8b5cf6; border:none;">Tekshirish</button>
+                     `;
+                }
+
+                document.getElementById('q-text').innerText = `${currentQIndex + 1}-Savol: ${q.q}`;
+                document.getElementById('q-dt').value = '';
+                document.getElementById('q-kt').value = '';
+                document.getElementById('q-sum').value = '';
+                document.getElementById('q-feedback').innerText = '';
+                document.getElementById('q-feedback').style.display = 'none';
+            }
+
+            function checkAnswer() {
+                const dt = document.getElementById('q-dt').value.trim();
+                const kt = document.getElementById('q-kt').value.trim();
+                const sum = parseFloat(document.getElementById('q-sum').value) || 0;
+
+                const target = quizQuestions[currentQIndex];
+                const feedback = document.getElementById('q-feedback');
+
+                if (dt === target.dt && kt === target.kt && sum === target.sum) {
+                    feedback.innerHTML = '<span style="color:green; font-weight:bold;">✅ Javob to\'g\'ri!</span>';
+                    feedback.style.display = 'block';
+                    setTimeout(() => {
+                        currentQIndex++;
+                        loadQuestion();
+                    }, 1000);
+                } else {
+                    feedback.innerHTML = `<span style="color:red; font-weight:bold;">❌ Xato!</span><br>To'g'ri javob: Dt ${target.dt}, Kt ${target.kt}, Summa: ${target.sum.toLocaleString()}`;
+                    feedback.style.display = 'block';
                 }
             }
-            app.init();
-        };
-    </script>
-</body>
+        </script>
+
+        <!-- QUIZ MODAL -->
+        <div class="modal" id="quiz-modal"
+            style="display:none; z-index:9999; align-items:center; justify-content:center;">
+            <div class="modal-content" style="max-width:500px; max-height:initial;">
+                <div class="card-header">
+                    <h3 style="margin:0; color:#8b5cf6;">🧠 Bilimni Sinash</h3>
+                    <button class="btn-outline btn-sm" onclick="closeQuiz()">&times;</button>
+                </div>
+
+                <div style="padding:1.5rem;" id="quiz-content">
+                    <div style="background:#f3f4f6; padding:15px; border-radius:8px; margin-bottom:20px; font-weight:bold; color:#1f2937;"
+                        id="q-text">
+                        Savol yuklanmoqda...
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:5px;">Debet
+                                (Schyot)</label>
+                            <input type="text" id="q-dt" placeholder="Mas: 1010" class="form-control">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:5px;">Kredit
+                                (Schyot)</label>
+                            <input type="text" id="q-kt" placeholder="Mas: 6010" class="form-control">
+                        </div>
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label
+                            style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:5px;">Summa</label>
+                        <input type="number" id="q-sum" placeholder="So'mda kiriting" class="form-control">
+                    </div>
+
+                    <div id="q-feedback"
+                        style="margin-bottom:15px; padding:10px; background:#fff; border:1px solid #ccc; border-radius:6px; display:none;">
+                    </div>
+
+                    <button onclick="checkAnswer()" class="btn btn-primary"
+                        style="width:100%; background:#8b5cf6; border:none;">Tekshirish</button>
+                </div>
+            </div>
+        </div>
+    </body>
 
 </html>
